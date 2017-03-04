@@ -24,7 +24,7 @@
 int main(int argc, char** argv)
 {
 
-	simulated_annealing_optimization();
+	simulated_annealing();
 	//simulated_annealing();
 
 	_getch();
