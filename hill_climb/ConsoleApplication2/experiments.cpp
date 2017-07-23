@@ -7,8 +7,8 @@
 #include "pcg_basic.h"
 #include <math.h>
 #include "random.h"
-#include "fuggvenyek.h"
-#include "probak.h"
+#include "functions.h"
+#include "experiments.h"
 #include "hill_climb.h"
 
 #define PI 3.1415926535897
@@ -67,7 +67,7 @@ void cucc()
 	printf("   %f", g);
 }
 
-//rng tesztelõ
+//rng tester
 void rng_test()
 {
 	double x;

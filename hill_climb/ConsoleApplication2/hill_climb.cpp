@@ -9,15 +9,15 @@
 #include "pcg_basic.h"
 #include <math.h>
 #include "random.h"
-#include "fuggvenyek.h"
-#include "probak.h"
+#include "functions.h"
+#include "experiments.h"
 #include "hill_climb.h"
 
 #define PI 3.1415926535897
 #define e 2.71828182845904523536
 
 
-//skalár gradient ascent
+//scalar gradient ascent
 void gradient()
 {
 	int stuff = 1;
@@ -45,7 +45,7 @@ void gradient()
 
 }
 
-//vektor gradient ascent
+//vector gradient ascent
 void gradientv()
 {
 	int stuff = 1;
@@ -84,7 +84,6 @@ void gradientv()
 	//printf("%f", sqrt(fv1(y, 0)*fv1(y, 0) + fv1(y, 1)*fv1(y, 1)));
 
 }
-
 
 
 //hill climbing
@@ -143,29 +142,29 @@ void hillclimb()
 void gaussian_climb()
 {
 	int n = 100;		//number of children
-	int stuff = 1;		//a while számlálója
+	int stuff = 1;		//counter for while cycle
 	pcg32_random_t rng;	//random number generator
 	pcg32_srandom_r(&rng, time(NULL) ^ (intptr_t)&printf, (intptr_t)&rng);
 
-	double x, y;			//ez lesz egy random szám
+	double x, y;		//this will be random numbers
 	double s = 0;		//original candidate
 	double r;			//child number
 	double w;			//child number variations
 	double best = s;	//best number
-	double neg = 1;		//elsõ érték negálására az if-ben
-	double neg2 = 1;	//második érték negálására az if-ben
+	double neg = 1;		//negate first value in if statement
+	double neg2 = 1;	//negate 2nd value in if statement
 
-	double nu = 0;		//gaussian nu-je
-	double sigma = 1;	//gaussian sigmája
-	double distro;		//amibe elmentjük a gaussian által létrehozott számot
-	double z = 0;			//a distrohoz kell
-	int k = 1;			//belsõ számláló
+	double nu = 0;		//gaussian nu
+	double sigma = 1;	//gaussian sigma
+	double distro;		//save into this the number from gaussian distribution
+	double z = 0;		//for the distro
+	int k = 1;			//inner counter
 
-	double sugar = 1;	//a random szám generálás sugara 0 körül
+	double sugar = 1;	//radius of rng around 0
 
 	while (fvg1(best)>0.0001 || fvg1(best)<-0.0001)
 	{
-		//random szám generálás
+		//rng
 		z = 0;
 		while (z <= 0 || z >= 1)
 		{
@@ -176,14 +175,14 @@ void gaussian_climb()
 			k++;
 		}
 
-		//gaussian random szám
+		//gaussian random number
 		distro = nu + x*sigma*sqrt(-2 * log(z) / z);
 
 		r = s + distro;
 
 		for (int i = 0; i < n; i++)
 		{
-			//random szám generálás
+			//rng
 			z = 0;
 			while (z <= 0 || z >= 1)
 			{
@@ -194,12 +193,12 @@ void gaussian_climb()
 			}
 
 
-			//gaussian random szám
+			//gaussian random number
 			distro = nu + x*sigma*sqrt(-2 * log(z) / z);
 
 			w = s + distro;
 
-			//a derivált minél közelebb legyen 0-hoz
+			//derivate as closes as possible to 0
 			if (fvg1(w) < 0) neg = -1;
 			else neg = 1;
 			if (fvg1(r) < 0) neg2 = -1;
@@ -208,7 +207,7 @@ void gaussian_climb()
 		}
 		s = r;
 
-		//a derivált minél közelebb legyen 0-hoz
+		//derivate as closes as possible to 0
 		if (fvg1(s) < 0) neg = -1;
 		else neg = 1;
 		if (fvg1(best) < 0) neg2 = -1;
@@ -225,30 +224,30 @@ void gaussian_climb()
 void simulated_annealing()
 {
 	double n = 503;		//number of children
-	int stuff = 1;		//a while számlálója
+	int stuff = 1;		//counter for while cycle
 	pcg32_random_t rng;
 	pcg32_srandom_r(&rng, time(NULL) ^ (intptr_t)&printf, (intptr_t)&rng);	//random number generator
 
-	double x, y;			//ez lesz egy random szám
+	double x, y;		//this will be random numbers
 	double s = 0;		//original candidate
 	double r;			//child number
 	double w;			//child number variations
 	double best = s;	//best number
-	double neg = 1;		//elsõ érték negálására az if-ben
-	double neg2 = 1;	//második érték negálására az if-ben
-	int t = 100;	//"temperature"
+	double neg = 1;		//negate first value in if statement
+	double neg2 = 1;	//negate 2nd value in if statement
+	int t = 100;		//"temperature"
 
-	double nu = -0.4;		//gaussian nu-je
-	double sigma = 0.28;	//gaussian sigmája
-	double distro;		//amibe elmentjük a gaussian által létrehozott számot
-	double z;			//a distrohoz kell
-	int k = 1;			//belsõ számláló
+	double nu = -0.4;		//gaussian nu
+	double sigma = 0.28;	//gaussian sigma
+	double distro;		//save into this the number from gaussian distribution
+	double z;			//for the distro
+	int k = 1;			//inner counter
 
-	double sugar = 1;	//a random szám generálás sugara 0 körül
+	double sugar = 1;	//radius of rng around 0
 
 	while ((fvg1(best)>0.0001 || fvg1(best)<-0.0001) && t>0)
 	{
-		//random szám generálás
+		//rng
 		z = 0;
 		while (z <= 0 || z >= 1)
 		{
@@ -258,7 +257,7 @@ void simulated_annealing()
 			k++;
 		}
 
-		//gaussian random szám
+		//gaussian random number
 		distro = nu + x*sigma*sqrt(-2 * log(z) / z);
 
 
@@ -266,7 +265,7 @@ void simulated_annealing()
 
 		for (int i = 0; i < (int)n; i++)
 		{
-			//random szám generálás
+			//rng
 			z = 0;
 			while (z <= 0 || z >= 1)
 			{
@@ -276,12 +275,12 @@ void simulated_annealing()
 				k++;
 			}
 
-			//gaussian random szám
+			//gaussian random number
 			distro = nu + x*sigma*sqrt(-2 * log(z) / z);
 
 			w = s + distro;
 
-			//a derivált minél közelebb legyen 0-hoz
+			//derivate as closes as possible to 0
 			if (fvg1(w) < 0) neg = -1;
 			else neg = 1;
 			if (fvg1(r) < 0) neg2 = -1;
@@ -290,10 +289,10 @@ void simulated_annealing()
 			//stuff++;
 		}
 		k++;
-		//random szám 0 és 1 közt
+		//random number between 0 and 1
 		x = ((double)pcg32_boundedrand_r(&rng, 1000000000)) / 1000000000;
 
-		//a derivált minél közelebb legyen 0-hoz
+		//derivate as closes as possible to 0
 		if (fvg1(r) < 0) neg = -1;
 		else neg = 1;
 		if (fvg1(s) < 0) neg2 = -1;
@@ -301,7 +300,7 @@ void simulated_annealing()
 
 		if (neg*fvg1(r) < neg2*fvg1(s) || x<pow(e, ((1 / (neg*fvg1(r)) - 1 / (neg2*fvg1(s)))) / t)) s = r;
 
-		//a derivált minél közelebb legyen 0-hoz
+		//derivate as closes as possible to 0
 		if (fvg1(s) < 0) neg = -1;
 		else neg = 1;
 		if (fvg1(best) < 0) neg2 = -1;
@@ -316,31 +315,31 @@ void simulated_annealing()
 
 }
 
-//optimalizálandó simulated annealing
+//simulated annealing function to be optimized
 double simulated_annealing_proto(double n, double nu, double sigma, pcg32_random_t rng)
 {
-	int stuff = 1;		//a while számlálója
+	int stuff = 1;		//counter for while cycle
 
 
-	double x, y;			//ez lesz egy random szám
+	double x, y;		//this will be random numbers
 	double s = 0;		//original candidate
 	double r;			//child number
 	double w;			//child number variations
 	double best = s;	//best number
-	double neg = 1;		//elsõ érték negálására az if-ben
-	double neg2 = 1;	//második érték negálására az if-ben
-	int t = 100;	//"temperature"
+	double neg = 1;		//negate first value in if statement
+	double neg2 = 1;	//negate 2nd value in if statement
+	int t = 100;		//"temperature"
 
 
 
-	double distro;		//amibe elmentjük a gaussian által létrehozott számot
-	double z;			//a distrohoz kell
+	double distro;		//to save the gaussian number
+	double z;			//needed for distro
 
 	double sugar = 1;	//a random szám generálás sugara 0 körül
 
 	while ((fvg1(best)>0.001 || fvg1(best)<-0.001) && t>0)
 	{
-		//random szám generálás
+		//rng
 		z = 0;
 		while (z <= 0 || z >= 1)
 		{
@@ -350,14 +349,14 @@ double simulated_annealing_proto(double n, double nu, double sigma, pcg32_random
 
 		}
 
-		//gaussian random szám
+		//gaussian random number
 		distro = nu + x*sigma*sqrt(-2 * log(z) / z);
 
 		r = s + distro;
 
 		for (int i = 0; i <(int)n; i++)
 		{
-			//random szám generálás
+			//rng
 			z = 0;
 			while (z <= 0 || z >= 1)
 			{
@@ -367,13 +366,13 @@ double simulated_annealing_proto(double n, double nu, double sigma, pcg32_random
 
 			}
 
-			//gaussian random szám
+			//gaussian random number
 			distro = nu + x*sigma*sqrt(-2 * log(z) / z);
 			//printf("%f\n", distro);
 
 			w = s + distro;
 
-			//a derivált minél közelebb legyen 0-hoz
+			//derivate as closes as possible to 0
 			if (fvg1(w) < 0) neg = -1;
 			else neg = 1;
 			if (fvg1(r) < 0) neg2 = -1;
@@ -383,10 +382,10 @@ double simulated_annealing_proto(double n, double nu, double sigma, pcg32_random
 			//stuff++;
 		}
 
-		//random szám 0 és 1 közt
+		//random number between 0 and 1
 		x = ((double)pcg32_boundedrand_r(&rng, 1000000000)) / 1000000000;
 
-		//a derivált minél közelebb legyen 0-hoz
+		//derivate as closes as possible to 0
 		if (fvg1(r) < 0) neg = -1;
 		else neg = 1;
 		if (fvg1(s) < 0) neg2 = -1;
@@ -394,7 +393,7 @@ double simulated_annealing_proto(double n, double nu, double sigma, pcg32_random
 
 		if (neg*fvg1(r) < neg2*fvg1(s) || x<pow(e, ((1 / (neg*fvg1(r)) - 1 / (neg2*fvg1(s)))) / t)) s = r;
 
-		//a derivált minél közelebb legyen 0-hoz
+		//derivate as closes as possible to 0
 		if (fvg1(s) < 0) neg = -1;
 		else neg = 1;
 		if (fvg1(best) < 0) neg2 = -1;
@@ -408,16 +407,16 @@ double simulated_annealing_proto(double n, double nu, double sigma, pcg32_random
 
 }
 
-//simulated annealing optimalizáló
+//simulated annealing optimization function
 void simulated_annealing_optimization()
 {
-	int n = 10;								//number of children
-	int stuff = 1;								//a while számlálója
+	int n = 10;									//number of children
+	int stuff = 1;								//counter for while cycle
 	pcg32_random_t rng;
 	pcg32_srandom_r(&rng, time(NULL) ^ (intptr_t)&printf, (intptr_t)&rng);	//random number generator
-	int i;										//for ciklusokhoz
+	int i;										//for for cycles
 
-	double x, y;								//ez lesz egy random szám
+	double x, y;								//these will be random numbers
 	double s[3] = { 500,-0.3,0.4 };				//original candidate
 	double r[3];								//child number
 	double w[3];								//child number variations
@@ -425,11 +424,13 @@ void simulated_annealing_optimization()
 
 	int t = 10000;								//"temperature"
 
-	double nu = 0;								//gaussian nu-je
-	double sigma[3] = { 5,0.01,0.01 };		//gaussian sigmája
+	double nu = 0;								//gaussian nu
+	double sigma[3] = { 5,0.01,0.01 };			//gaussian sigma
 
-	double distro;								//amibe elmentjük a gaussian által létrehozott számot
-	double z;									//a distrohoz kell
+	double distro;								//to save gaussian number
+	double z;									//needed for distra
+
+	/* numbers to save best candidates */
 	double besto1 = 0;
 	double besto2 = 0;
 	double besto3 = 0;
@@ -437,16 +438,16 @@ void simulated_annealing_optimization()
 	double besto5 = 0;
 	double besto6 = 0;
 
-	double bestoszam = 0;
+	double bestoszam = 0;						//best candidate value
 
 
-	double sugar = 1;							//a random szám generálás sugara 0 körül
+	double sugar = 1;							//rng radius around 0
 
 	while (t>0)
 	{
 		for (i = 0; i < 3; )
 		{
-			//random szám generálás
+			//rng
 			z = 0;
 			while (z <= 0 || z >= 1)
 			{
@@ -456,7 +457,7 @@ void simulated_annealing_optimization()
 
 			}
 
-			//gaussian random szám
+			//gaussian random number
 			distro = nu + x*sigma[i] * sqrt(-2 * log(z) / z);
 
 			r[i] = s[i] + distro;
@@ -469,7 +470,7 @@ void simulated_annealing_optimization()
 		{
 			for (i = 0; i < 3;)
 			{
-				//random szám generálás
+				//rng
 				z = 0;
 				while (z <= 0 || z >= 1)
 				{
@@ -479,7 +480,7 @@ void simulated_annealing_optimization()
 
 				}
 
-				//gaussian random szám
+				//gaussian random number
 				distro = nu + x*sigma[i] * sqrt(-2 * log(z) / z);
 
 				w[i] = s[i] + distro;
@@ -487,7 +488,7 @@ void simulated_annealing_optimization()
 				else i++;
 			}
 
-			//összehasonlítás
+			//compare
 			besto1 = 0;
 			for (int o = 0; o < 5; o++)
 			{
@@ -504,10 +505,10 @@ void simulated_annealing_optimization()
 
 		}
 
-		//random szám 0 és 1 közt
+		//random number between 0 and 1
 		x = ((double)pcg32_boundedrand_r(&rng, 1000000000)) / 1000000000;
 
-		//összehasonlítás
+		//compare
 		besto3 = 0;
 		for (int o = 0; o < 5; o++)
 		{
@@ -522,7 +523,7 @@ void simulated_annealing_optimization()
 			s[2] = r[2];
 		}
 
-		//összehasonlítás
+		//compare
 		besto5 = 0;
 		for (int o = 0; o < 5; o++)
 		{

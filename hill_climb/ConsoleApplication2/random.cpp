@@ -7,8 +7,8 @@
 #include "pcg_basic.h"
 #include <math.h>
 #include "random.h"
-#include "fuggvenyek.h"
-#include "probak.h"
+#include "functions.h"
+#include "experiments.h"
 #include "hill_climb.h"
 
 

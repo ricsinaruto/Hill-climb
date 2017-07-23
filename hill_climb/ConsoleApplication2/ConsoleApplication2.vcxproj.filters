@@ -27,13 +27,13 @@
     <ClInclude Include="random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fuggvenyek.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="probak.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="hill_climb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="experiments.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,13 +47,13 @@
     <ClCompile Include="random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fuggvenyek.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="probak.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="hill_climb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="experiments.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
